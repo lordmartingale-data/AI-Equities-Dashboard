@@ -2,8 +2,13 @@ name: Update prices
 
 on:
   schedule:
+    # 22:00 UTC on weekdays = 05:00 next morning in Bangkok (ICT).
+    # US cash close is 20:00 UTC in summer / 21:00 UTC in winter, so this
+    # clears the close year-round with room for the feeds to settle.
+    # GitHub runs scheduled jobs on a best-effort basis and they are often
+    # 5-30 minutes late during peak load. Fine for end-of-day data.
     - cron: "0 22 * * 1-5"
-  workflow_dispatch:
+  workflow_dispatch: # adds a "Run workflow" button for manual refreshes
 
 permissions:
   contents: write
@@ -29,10 +34,14 @@ jobs:
         run: |
           git config user.name  "prices-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- data.json; then
-            echo "No change in data.json, nothing to commit."
+          # Stage first, then compare against the index. Checking the working
+          # tree directly would report "no change" for a file git isn't tracking
+          # yet, which silently skips the very first commit.
+          git add data.json
+          if git diff --cached --quiet; then
+            echo "data.json unchanged, nothing to commit."
           else
-            git add data.json
             git commit -m "prices: $(date -u '+%Y-%m-%d %H:%M UTC')"
             git push
+            echo "Committed updated data.json."
           fi
