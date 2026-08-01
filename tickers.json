@@ -1,0 +1,91 @@
+{
+  "_comment": "One source of truth. The umbrella diagram and the data table are both generated from this tree. Add a ticker here and it appears in both.",
+  "_shares_note": "shares_m = shares outstanding in millions, used for market cap (price x shares). Free price feeds do not publish share counts, so these are manual. They drift slowly via buybacks and issuance - worth a check every few months.",
+
+  "benchmark": { "symbol": "SMH", "name": "VanEck Semiconductor ETF" },
+
+  "tree": {
+    "name": "Hyperscalers",
+    "note": "capex source",
+    "tickers": [
+      { "symbol": "AMZN", "name": "Amazon",    "shares_m": 10700 },
+      { "symbol": "MSFT", "name": "Microsoft", "shares_m": 7430 },
+      { "symbol": "GOOG", "name": "Alphabet",  "shares_m": 12100 },
+      { "symbol": "META", "name": "Meta",      "shares_m": 2520 },
+      { "symbol": "ORCL", "name": "Oracle",    "shares_m": 2820 }
+    ],
+    "children": [
+      {
+        "name": "Memory",
+        "children": [
+          {
+            "name": "HBM & DRAM",
+            "tickers": [
+              { "symbol": "MU",   "name": "Micron",     "shares_m": 1120 },
+              { "symbol": "SKHY", "name": "SK hynix",   "shares_m": 5530, "note": "ADR, 1/10 share" },
+              { "symbol": "SSNLF", "name": "Samsung",   "shares_m": 5919,
+                "yahoo": "005930.KS", "stooq": false, "currency": "KRW" }
+            ]
+          },
+          {
+            "name": "NAND",
+            "tickers": [
+              { "symbol": "SNDK", "name": "SanDisk", "shares_m": 145 }
+            ],
+            "children": [
+              {
+                "name": "NAND manufacturing",
+                "tickers": [
+                  { "symbol": "KIOXIA", "name": "Kioxia", "shares_m": 540,
+                    "yahoo": "285A.T", "stooq": false, "currency": "JPY" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Compute",
+        "children": [
+          {
+            "name": "Chip designers",
+            "tickers": [
+              { "symbol": "NVDA", "name": "NVIDIA", "shares_m": 24300 },
+              { "symbol": "AMD",  "name": "AMD",    "shares_m": 1630 }
+            ]
+          },
+          {
+            "name": "Foundry",
+            "tickers": [
+              { "symbol": "INTC", "name": "Intel", "shares_m": 4700 },
+              { "symbol": "TSM",  "name": "TSMC",  "shares_m": 5190, "note": "ADR" }
+            ]
+          },
+          {
+            "name": "Neoclouds",
+            "tickers": [
+              { "symbol": "NBIS", "name": "Nebius",    "shares_m": 240 },
+              { "symbol": "CRWV", "name": "CoreWeave", "shares_m": 480 }
+            ]
+          },
+          {
+            "name": "Chip equipment",
+            "tickers": [
+              { "symbol": "ASML", "name": "ASML",           "shares_m": 393, "note": "ADR" },
+              { "symbol": "AMAT", "name": "Applied Materials", "shares_m": 800 },
+              { "symbol": "KLAC", "name": "KLA",            "shares_m": 132 },
+              { "symbol": "LRCX", "name": "Lam Research",   "shares_m": 1270 }
+            ]
+          },
+          {
+            "name": "Network plumbing",
+            "tickers": [
+              { "symbol": "ALAB", "name": "Astera Labs", "shares_m": 175 },
+              { "symbol": "CRDO", "name": "Credo",       "shares_m": 170 }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
