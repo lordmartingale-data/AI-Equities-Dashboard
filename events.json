@@ -1,0 +1,77 @@
+{
+  "_comment": "Your calendar. Nothing fetches this - you own it. The dashboard shows a rolling window from today, so past events drop off on their own and you only ever add.",
+
+  "_how_to_add": {
+    "when": "ISO with offset: 2026-08-11T17:00:00-04:00. The -04:00 is US Eastern in summer (EDT); use -05:00 from Nov to Mar (EST). Bangkok time is worked out for you. For an all-day event write just 2026-08-13.",
+    "kind": "one of: earnings, macro, fed, company, other",
+    "status": "confirmed = company IR or official agency said so. estimated = an aggregator's guess, or your own. conflicting = sources disagree.",
+    "tickers": "optional list, links the event to names in your umbrella",
+    "note": "optional - why you care. This is the part worth writing."
+  },
+
+  "window_days": 14,
+
+  "events": [
+    {
+      "when": "2026-08-05",
+      "kind": "earnings",
+      "title": "SanDisk Q4 FY26 earnings",
+      "tickers": ["SNDK"],
+      "status": "estimated",
+      "note": "Confirm on SanDisk IR. Chart was parabolic into this - risk/reward on any new entry is poor regardless of the print."
+    },
+    {
+      "when": "2026-08-07T08:30:00-04:00",
+      "kind": "macro",
+      "title": "Employment Situation (July) — non-farm payrolls",
+      "status": "confirmed",
+      "note": "BLS. First of two prints before the Sept FOMC."
+    },
+    {
+      "when": "2026-08-11T17:00:00-04:00",
+      "kind": "earnings",
+      "title": "CoreWeave Q2 2026 earnings",
+      "tickers": ["CRWV"],
+      "status": "confirmed",
+      "note": "Date from CoreWeave IR directly; aggregators disagreed. Guided $2.45-2.60B revenue. Backlog conversion and margin are the numbers, not the headline."
+    },
+    {
+      "when": "2026-08-12T08:30:00-04:00",
+      "kind": "macro",
+      "title": "CPI (July)",
+      "status": "confirmed",
+      "note": "BLS. Sticky inflation is the load-bearing assumption in the gold thesis."
+    },
+    {
+      "when": "2026-08-12",
+      "kind": "earnings",
+      "title": "Nebius Q2 2026 earnings",
+      "tickers": ["NBIS"],
+      "status": "conflicting",
+      "note": "Recent reporting says Aug 12; earlier notes had Aug 6. Confirm on Nebius IR. First full update since Nvidia's 9.3% stake disclosure."
+    },
+    {
+      "when": "2026-08-13",
+      "kind": "company",
+      "title": "SanDisk Investor Day",
+      "tickers": ["SNDK"],
+      "status": "estimated",
+      "note": "Potentially a bigger catalyst than the print - guidance framework rather than one quarter."
+    },
+    {
+      "when": "2026-08-13T16:00:00-04:00",
+      "kind": "earnings",
+      "title": "Applied Materials Q3 FY26 earnings",
+      "tickers": ["AMAT"],
+      "status": "estimated",
+      "note": "Fiscal Q3 ends July; mid-August is the usual slot. Confirm on IR. WFE commentary reads across to LRCX and KLAC."
+    },
+    {
+      "when": "2026-09-16T14:00:00-04:00",
+      "kind": "fed",
+      "title": "FOMC decision + Summary of Economic Projections",
+      "status": "confirmed",
+      "note": "Sept 15-16 meeting. Dot plot meeting. First under Warsh with a full projection round. Lands 01:00 Bangkok."
+    }
+  ]
+}

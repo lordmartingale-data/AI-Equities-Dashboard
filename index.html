@@ -102,6 +102,75 @@
   .chip-pct    { font-family: var(--mono); font-size: 10px; }
   .edge        { stroke: var(--line-2); fill: none; }
 
+  /* --------------------------------------------------------------- events */
+
+  .strip { display: flex; gap: 3px; margin-bottom: 20px; min-width: 620px; }
+  .stripwrap { overflow-x: auto; }
+
+  .day {
+    flex: 1; min-width: 40px;
+    border-top: 2px solid var(--line-2);
+    padding-top: 6px;
+  }
+  .day.wknd { border-top-color: #1f2530; }
+  .day.today { border-top-color: var(--sand); }
+  .day.has { border-top-color: var(--dim); }
+
+  .day-n  { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .day-w  { font-family: var(--sans); font-size: 9px; color: var(--dimmer);
+            text-transform: uppercase; letter-spacing: .08em; display: block; }
+  .day.today .day-n { color: var(--sand); font-weight: 600; }
+  .day.wknd .day-n, .day.wknd .day-w { color: #333c4d; }
+
+  .pips { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 2px; min-height: 7px; }
+  .pip  { width: 6px; height: 6px; border-radius: 50%; }
+
+  .ev {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 0 16px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ev:hover { background: var(--panel); }
+  .ev.soon { box-shadow: inset 2px 0 0 var(--sand); padding-left: 10px; }
+
+  .ev-when { font-family: var(--mono); font-size: 11.5px; color: var(--text); padding-top: 1px; }
+  .ev-when i { display: block; font-style: normal; font-size: 10px; color: var(--dimmer); margin-top: 2px; }
+  .ev-in    { font-family: var(--mono); font-size: 10px; color: var(--sand); }
+
+  .ev-head { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+  .ev-title { font-family: var(--sans); font-size: 13px; color: var(--text); }
+
+  .tag {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .07em;
+    text-transform: uppercase; padding: 2px 5px; border-radius: 2px;
+  }
+  .tag.earnings { background: rgba(217,200,158,.13); color: var(--sand); }
+  .tag.macro    { background: rgba(120,130,154,.16); color: #9aa4bd; }
+  .tag.fed      { background: rgba(201,112,100,.15); color: var(--down); }
+  .tag.company  { background: rgba(127,176,105,.13); color: var(--up); }
+  .tag.other    { background: rgba(120,130,154,.10); color: var(--dim); }
+
+  .st { font-family: var(--mono); font-size: 9.5px; letter-spacing: .05em; }
+  .st.confirmed   { color: var(--dimmer); }
+  .st.estimated   { color: var(--sand); }
+  .st.conflicting { color: var(--down); }
+
+  .tk {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--text); background: #232a38;
+    padding: 2px 5px; border-radius: 2px;
+  }
+
+  .ev-note { font-size: 11.5px; color: var(--dim); margin-top: 4px; line-height: 1.5; }
+
+  .beyond {
+    font-family: var(--sans); font-size: 11.5px; color: var(--dimmer);
+    padding: 14px 0 0; border-top: 1px dashed var(--line-2); margin-top: 4px;
+  }
+  .empty { font-family: var(--mono); font-size: 12px; color: var(--dimmer); padding: 18px 0; }
+
   /* ---------------------------------------------------------------- table */
 
   .controls {
@@ -209,6 +278,7 @@
   "use strict";
 
   var D = null;                 // the loaded payload
+  var EV = null;                // events.json, optional
   var relPeriod = "30d";        // which period the vs-benchmark column uses
   var sort = { key: null, dir: "desc" };
 
@@ -350,6 +420,142 @@
       drawEdges(root, tops) + drawNode(root, tops) + "</svg></div>";
   }
 
+  /* ---------------------------------------------------------------- events
+     Read from events.json, which nothing fetches - it's hand-kept. The window
+     rolls forward from today, so past entries fall off by themselves and the
+     only maintenance is adding new ones. */
+
+  var DAY = 864e5;
+
+  function parseWhen(s) {
+    // "2026-08-11T17:00:00-04:00" -> exact instant. "2026-08-13" -> all-day.
+    if (s.indexOf("T") < 0) return { d: new Date(s + "T12:00:00Z"), allDay: true };
+    return { d: new Date(s), allDay: false };
+  }
+
+  function fmt(d, tz, opts) {
+    try {
+      return new Intl.DateTimeFormat("en-GB",
+        Object.assign({ timeZone: tz }, opts)).format(d);
+    } catch (e) { return ""; }
+  }
+
+  var TZ = "Asia/Bangkok";
+
+  // Everything below works in Bangkok calendar days. Using the browser's local
+  // date instead would make the countdown disagree with the date shown next to
+  // it whenever a US evening event rolls past midnight here.
+  function bkkKey(d) {
+    return fmt(d, TZ, { year: "numeric", month: "2-digit", day: "2-digit" })
+      .split("/").reverse().join("-");
+  }
+
+  function bkkMidnight(d) {
+    return new Date(bkkKey(d) + "T00:00:00Z");
+  }
+
+  function relDays(a, b) {
+    return Math.round((a - b) / DAY);
+  }
+
+  function events() {
+    if (!EV || !EV.events) {
+      return '<h2>Calendar</h2><div class="empty">No events.json found. ' +
+        'Add one to the repo to track earnings and macro dates here.</div>';
+    }
+
+    var now = new Date();
+    var win = EV.window_days || 14;
+    var todayMid = bkkMidnight(now);
+    var endMid = new Date(todayMid.getTime() + win * DAY);
+
+    var parsed = EV.events.map(function (e) {
+      var p = parseWhen(e.when);
+      return { e: e, d: p.d, allDay: p.allDay };
+    }).sort(function (a, b) { return a.d - b.d; });
+
+    // Compare on Bangkok midnights so an event stays visible for its whole
+    // local day rather than vanishing the instant it happens in New York.
+    parsed.forEach(function (x) { x.mid = bkkMidnight(x.d); });
+    var inWin = parsed.filter(function (x) { return x.mid >= todayMid && x.mid < endMid; });
+    var later = parsed.filter(function (x) { return x.mid >= endMid; });
+
+    // ---- the strip: one column per day, pips show clustering
+    var byDay = {};
+    inWin.forEach(function (x) {
+      var k = x.mid.toISOString().slice(0, 10);
+      (byDay[k] = byDay[k] || []).push(x);
+    });
+
+    var cells = "";
+    for (var i = 0; i < win; i++) {
+      var d = new Date(todayMid.getTime() + i * DAY);
+      var k = d.toISOString().slice(0, 10);
+      var hits = byDay[k] || [];
+      var wd = d.getUTCDay();
+      var cls = "day" + (wd === 0 || wd === 6 ? " wknd" : "") +
+        (i === 0 ? " today" : "") + (hits.length ? " has" : "");
+      var pips = hits.map(function (x) {
+        var col = { earnings: "#d9c89e", macro: "#9aa4bd", fed: "#c97064",
+                    company: "#7fb069" }[x.e.kind] || "#4d566b";
+        return '<i class="pip" style="background:' + col + '"></i>';
+      }).join("");
+      cells += '<div class="' + cls + '"><span class="day-n">' +
+        fmt(d, "UTC", { day: "numeric" }) + '</span><span class="day-w">' +
+        fmt(d, "UTC", { weekday: "short" }) + '</span><div class="pips">' +
+        pips + "</div></div>";
+    }
+
+    // ---- the list
+    var list = "";
+    if (!inWin.length) {
+      list = '<div class="empty">Nothing scheduled in the next ' + win + ' days.</div>';
+    }
+    inWin.forEach(function (x) {
+      var e = x.e;
+      var days = relDays(x.mid, todayMid);
+      var inTxt = days === 0 ? "today" : days === 1 ? "tomorrow" : "in " + days + "d";
+
+      var bkk = fmt(x.d, "Asia/Bangkok", { day: "numeric", month: "short" });
+      var when = '<div class="ev-when">' + bkk;
+      if (!x.allDay) {
+        var t = fmt(x.d, "Asia/Bangkok", { hour: "2-digit", minute: "2-digit", hour12: false });
+        var et = fmt(x.d, "America/New_York", { hour: "2-digit", minute: "2-digit", hour12: false });
+        when += " " + t + "<i>" + et + " ET</i>";
+      } else {
+        when += "<i>time tbc</i>";
+      }
+      when += '<div class="ev-in">' + inTxt + "</div></div>";
+
+      var tks = (e.tickers || []).map(function (t) {
+        return '<span class="tk">' + esc(t) + "</span>";
+      }).join(" ");
+
+      var stTxt = { confirmed: "confirmed", estimated: "est.", conflicting: "sources differ" }[e.status] || e.status;
+
+      var head = '<div><div class="ev-head"><span class="tag ' + esc(e.kind) + '">' +
+        esc(e.kind) + '</span><span class="ev-title">' + esc(e.title) + "</span>" +
+        tks + '<span class="st ' + esc(e.status) + '">' + esc(stTxt) + "</span></div>" +
+        (e.note ? '<div class="ev-note">' + esc(e.note) + "</div>" : "") + "</div>";
+
+      list += '<div class="ev' + (days <= 1 ? " soon" : "") + '">' + when + head + "</div>";
+    });
+
+    var tail = "";
+    if (later.length) {
+      var n = later[0];
+      tail = '<div class="beyond">Next beyond the window — ' + esc(n.e.title) + " on " +
+        fmt(n.d, "Asia/Bangkok", { day: "numeric", month: "long" }) +
+        " (" + relDays(n.mid, todayMid) + " days).</div>";
+    }
+
+    return '<h2>Calendar</h2><div class="h2note">Next ' + win +
+      ' days, Bangkok time. Hand-kept in events.json — dates are only as good as ' +
+      'the last time you checked them.</div>' +
+      '<div class="stripwrap"><div class="strip">' + cells + "</div></div>" +
+      list + tail;
+  }
+
   /* ----------------------------------------------------------------- table */
 
   function flatten(node, depth, out) {
@@ -447,7 +653,7 @@
       '<h2>Where the money flows</h2>' +
       '<div class="h2note">Chips shaded by today\'s move. Structure reads top-down: ' +
       'hyperscaler capex into memory and compute.</div>' +
-      umbrella() + table();
+      umbrella() + events() + table();
   }
 
   document.addEventListener("click", handle);
@@ -474,9 +680,19 @@
     }
   }
 
-  fetch("data.json?t=" + Date.now())
-    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-    .then(function (d) {
+  // events.json is optional - if it's missing the rest of the page still works.
+  var evReq = fetch("events.json?t=" + Date.now())
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .catch(function () { return null; });
+
+  Promise.all([
+    fetch("data.json?t=" + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
+    evReq
+  ])
+    .then(function (both) {
+      var d = both[0];
+      EV = both[1];
       D = d;
       var stale = "";
       var gen = new Date(d.generated_utc.replace(" ", "T") + ":00Z");
