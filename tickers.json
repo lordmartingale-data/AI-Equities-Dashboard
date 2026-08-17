@@ -83,6 +83,14 @@
               { "symbol": "ALAB", "name": "Astera Labs", "shares_m": 175 },
               { "symbol": "CRDO", "name": "Credo",       "shares_m": 170 }
             ]
+          },
+          {
+            "name": "Networking optics",
+            "tickers": [
+              { "symbol": "LITE", "name": "Lumentum",   "shares_m": 78 },
+              { "symbol": "COHR", "name": "Coherent",   "shares_m": 155 },
+              { "symbol": "AAOI", "name": "Applied Optoelectronics", "shares_m": 63 }
+            ]
           }
         ]
       }
