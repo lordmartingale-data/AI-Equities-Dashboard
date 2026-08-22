@@ -1,6 +1,5 @@
 {
   "_comment": "Your calendar. Nothing fetches this - you own it. The dashboard shows a rolling window from today, so past events drop off on their own and you only ever add.",
-
   "_how_to_add": {
     "when": "ISO with offset: 2026-08-11T17:00:00-04:00. The -04:00 is US Eastern in summer (EDT); use -05:00 from Nov to Mar (EST). Bangkok time is worked out for you. For an all-day event write just 2026-08-13.",
     "kind": "one of: earnings, macro, fed, company, other",
@@ -8,70 +7,113 @@
     "tickers": "optional list, links the event to names in your umbrella",
     "note": "optional - why you care. This is the part worth writing."
   },
-
-  "window_days": 14,
-
+  "window_days": 21,
   "events": [
     {
-      "when": "2026-08-05",
+      "when": "2026-08-26T17:20:00-04:00",
       "kind": "earnings",
-      "title": "SanDisk Q4 FY26 earnings",
-      "tickers": ["SNDK"],
-      "status": "estimated",
-      "note": "Confirm on SanDisk IR. Chart was parabolic into this - risk/reward on any new entry is poor regardless of the print."
+      "title": "NVIDIA Q2 FY27 earnings",
+      "tickers": [
+        "NVDA"
+      ],
+      "status": "confirmed",
+      "note": "Guided ~$91.0B +/-2%; consensus ~$91.85B, only ~0.9% above the midpoint. A modest beat is close to priced - the reaction hangs on the Q3 guide, Blackwell Ultra execution and gross-margin durability. Reads across the whole umbrella. Results ~13:20 PT, call 14:00 PT. Note it lands the night before Jackson Hole opens."
     },
     {
-      "when": "2026-08-07T08:30:00-04:00",
+      "when": "2026-08-27T08:30:00-04:00",
       "kind": "macro",
-      "title": "Employment Situation (July) — non-farm payrolls",
-      "status": "confirmed",
-      "note": "BLS. First of two prints before the Sept FOMC."
+      "title": "PCE price index (July) - Personal Income and Outlays",
+      "status": "estimated",
+      "note": "BEA, the Fed's actual target measure rather than CPI. Sources put this in the Aug 26-28 window; confirm on bea.gov. Feeds directly into the hawks' case at Jackson Hole two days later."
     },
     {
-      "when": "2026-08-11T17:00:00-04:00",
+      "when": "2026-08-27T17:00:00-04:00",
       "kind": "earnings",
-      "title": "CoreWeave Q2 2026 earnings",
-      "tickers": ["CRWV"],
+      "title": "Marvell Q2 FY27 earnings",
+      "tickers": [],
       "status": "confirmed",
-      "note": "Date from CoreWeave IR directly; aggregators disagreed. Guided $2.45-2.60B revenue. Backlog conversion and margin are the numbers, not the headline."
+      "note": "Not in the umbrella, but the cleanest read-across to ALAB and CRDO on custom silicon and interconnect demand. Data centre was 76% of revenue last quarter. Marvell has also set an Investor Day for Oct 6."
     },
     {
-      "when": "2026-08-12T08:30:00-04:00",
+      "when": "2026-08-28T10:00:00-04:00",
+      "kind": "fed",
+      "title": "Jackson Hole - Warsh keynote",
+      "status": "confirmed",
+      "note": "Symposium runs Aug 27-29; the Friday keynote is the market event. Warsh's first as Chair. He has curtailed forward guidance and shortened statements since May, and has pre-framed this as structural rather than near-term - so the setup favours disappointment for anyone expecting a September signal. The harder signal is already on the record: July's FOMC was 9-3 to hold, with Hammack, Kashkari and Logan dissenting for an immediate HIKE. Time approximate; KC Fed publishes the agenda the evening before."
+    },
+    {
+      "when": "2026-09-04T08:30:00-04:00",
       "kind": "macro",
-      "title": "CPI (July)",
+      "title": "Employment Situation (August) - non-farm payrolls",
       "status": "confirmed",
-      "note": "BLS. Sticky inflation is the load-bearing assumption in the gold thesis."
+      "note": "BLS. Last payrolls print before the Sept FOMC."
     },
     {
-      "when": "2026-08-12",
-      "kind": "earnings",
-      "title": "Nebius Q2 2026 earnings",
-      "tickers": ["NBIS"],
-      "status": "conflicting",
-      "note": "Recent reporting says Aug 12; earlier notes had Aug 6. Confirm on Nebius IR. First full update since Nvidia's 9.3% stake disclosure."
+      "when": "2026-09-07",
+      "kind": "other",
+      "title": "US markets closed - Labor Day",
+      "status": "confirmed",
+      "note": "No US session. Dashboard will show Friday's close; the workflow runs but finds nothing new."
     },
     {
-      "when": "2026-08-13",
-      "kind": "company",
-      "title": "SanDisk Investor Day",
-      "tickers": ["SNDK"],
-      "status": "estimated",
-      "note": "Potentially a bigger catalyst than the print - guidance framework rather than one quarter."
+      "when": "2026-09-11T08:30:00-04:00",
+      "kind": "macro",
+      "title": "CPI (August)",
+      "status": "confirmed",
+      "note": "BLS. Final inflation read before the FOMC five days later."
     },
     {
-      "when": "2026-08-13T16:00:00-04:00",
-      "kind": "earnings",
-      "title": "Applied Materials Q3 FY26 earnings",
-      "tickers": ["AMAT"],
-      "status": "estimated",
-      "note": "Fiscal Q3 ends July; mid-August is the usual slot. Confirm on IR. WFE commentary reads across to LRCX and KLAC."
+      "when": "2026-09-14",
+      "kind": "other",
+      "title": "US Senate reconvenes",
+      "status": "confirmed",
+      "note": "Recessed Aug 8, returns Sept 14 with roughly three weeks of floor time before the midterm campaign break. That window is the whole runway left for CLARITY in 2026."
+    },
+    {
+      "when": "2026-09-15",
+      "kind": "other",
+      "title": "CLARITY Act - Senate cloture vote",
+      "status": "confirmed",
+      "note": "PROCEDURAL, not final passage. Cloture on the motion to proceed - needs 60 votes just to begin formal debate. Republicans hold 53 seats, so ~7 Democrats must cross. Thune filed cloture before the recess. House passed H.R.3633 on 17 Jul 2025 (294-134); Senate Banking advanced it 15-9 on 14 May 2026. Blocking issues are ethics/conflict-of-interest language and illicit-finance safeguards; a Tillis-Gallego ethics proposal was sitting with the White House. Polymarket had 2026 signing odds down near 17% in early August. Even if cloture clears, House and Senate texts must still be reconciled - possibly via conference - before anything reaches the President. Lands 1-2 days before the FOMC."
     },
     {
       "when": "2026-09-16T14:00:00-04:00",
       "kind": "fed",
       "title": "FOMC decision + Summary of Economic Projections",
       "status": "confirmed",
-      "note": "Sept 15-16 meeting. Dot plot meeting. First under Warsh with a full projection round. Lands 01:00 Bangkok."
+      "note": "Sept 15-16 meeting, dot plot quarter. Hike-or-hold odds were near even in mid-August - unusual, and worth noting the risk here is a HIKE, not a cut. Half the committee penciled in hikes for 2026 back in June. Lands 01:00 Bangkok on the 17th."
+    },
+    {
+      "when": "2026-09-18",
+      "kind": "fed",
+      "title": "BOJ policy decision",
+      "status": "confirmed",
+      "note": "Sept 17-18 meeting, decision day two. Held at 1.0% in July on an 8-1 vote, Takata dissenting for 1.25%. No fixed release time; statement usually midday JST, presser 15:30 JST. Watch USD/JPY, then JGBs. Falls the day after the FOMC - the two compound rather than resolve separately."
+    },
+    {
+      "when": "2026-09-29T16:00:00-04:00",
+      "kind": "earnings",
+      "title": "Micron Q4 FY26 earnings",
+      "tickers": [
+        "MU"
+      ],
+      "status": "conflicting",
+      "note": "Sources split across Sept 22, 23 and 29 - confirm on Micron IR closer to the date. The memory-cycle checkpoint, and it sits right in the stated Sept-Oct exit window."
+    },
+    {
+      "when": "2026-10-06",
+      "kind": "company",
+      "title": "Marvell Investor Day",
+      "tickers": [],
+      "status": "confirmed",
+      "note": "Guidance framework rather than one quarter. Read-across to the connectivity bucket."
+    },
+    {
+      "when": "2026-10-28T14:00:00-04:00",
+      "kind": "fed",
+      "title": "FOMC decision",
+      "status": "confirmed",
+      "note": "Oct 27-28, no dot plot. Inside the exit window and one week before the midterms."
     }
   ]
 }
